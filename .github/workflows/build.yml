@@ -23,6 +23,10 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+      - name: Configure Git
+        run: |
+          git config --global user.email "no-reply@github.com"
+          git config --global user.name "Github Actions"
       - run: ./gradlew applyAllPatches
       - run: ./gradlew createMojmapPaperclipJar
       - uses: actions/upload-artifact@v6
