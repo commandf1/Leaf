@@ -1,0 +1,31 @@
+name: Build & Upload
+
+on:
+  push:
+    branches: [ "ver/1.21.11" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: blacksmith-8vcpu-ubuntu-2204
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up GraalVM JDK 21
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: 21
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew applyAllPatches
+      - run: ./gradlew createMojmapPaperclipJar
+      - uses: actions/upload-artifact@v6
+        with:
+          name: "Built Stuff"
+          path: "."
